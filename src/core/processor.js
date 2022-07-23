@@ -5,11 +5,15 @@ export default class Processor {
         }
 
         this.app = document.querySelector(app);
+        this.appContentBeforeProcess = this.app.innerHTML;
     }
 
-    processApp() {
-        const app = this.app;
-        let appContent = app.innerHTML;
+    CleanApp() {
+        this.app.innerHTML = '';
+    }
+
+    processAppData() {
+        let appContent = this.appContentBeforeProcess;
 
         Object.keys(this.options.data).forEach(variable => {
             let regexp = '{{\\s' + variable + '\\s}}';
@@ -19,18 +23,20 @@ export default class Processor {
 
         });
         
-        this.appContent = appContent;
+        this.appContentAfterDataProcess = appContent;
     }
 
     replaceVariables() {
-        this.app.innerHTML = this.appContent;
+        this.app.innerHTML = this.appContentAfterDataProcess;
     }
 
     init(options) {
         this.options = options;
 
         this.checkIfAppExists(options.app);
-        this.processApp();
+        this.CleanApp();
+        this.processAppData();
+
         this.replaceVariables();
     }
 }
